@@ -1,0 +1,127 @@
+  .tasks-container {
+    background-color: rgba(30, 42, 56, 0.3);
+  color: white;
+  min-height: 100vh;
+  padding: 40px 20px;
+  text-align: center;
+  }
+
+  .task-form {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  }
+
+  
+  .task-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    width: 300px;
+    background-color: white;
+    color: black;
+    text-align: center;
+  }
+  
+  button {
+    width: 200px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #0a1f33;
+    color: white;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+  }
+  
+  button:hover {
+    background-color: #08172a;
+    transform: scale(1.03);
+  }
+  
+  .tasks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 500px;
+  }
+  
+  .tasks-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2a3b4d;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.5s forwards;
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .tasks-list li.completed {
+    text-decoration: line-through;
+    color: #aaa;
+  }
+  
+  .task-info {
+    flex: 1;
+    cursor: pointer;
+    text-align: left;
+  }
+  
+  .task-category {
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    color: #ccc;
+  }
+  
+  .task-reminder {
+    font-size: 0.8rem;
+    margin-left: 10px;
+    color: #bbb;
+  }
+  
+  .delete-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #ff4d4f;
+    transition: color 0.3s ease;
+  }
+  
+  .delete-btn:hover {
+    color: #ff0000;
+  }
+
+  input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    width: 300px;
+    background-color: white;
+    color: black;
+    text-align: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  input:focus {
+    border-color: #0a1f33;
+    box-shadow: 0 0 5px rgba(10, 31, 51, 0.5);
+    outline: none;
+  }
+  

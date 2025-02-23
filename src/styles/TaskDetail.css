@@ -1,0 +1,37 @@
+.task-detail-container {
+    background-color: rgba(30, 42, 56, 0.3); 
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .task-details {
+    margin: 20px auto;
+    max-width: 600px;
+    background-color: #2a3b4d;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .task-details p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+  }
+  
+  .task-detail-container button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0a1f33;
+    color: white;
+    transition: background 0.3s ease;
+  }
+  
+  .task-detail-container button:hover {
+    background-color: #08172a;
+  }
+  

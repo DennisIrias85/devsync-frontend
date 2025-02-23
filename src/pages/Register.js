@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import API from '../api/api';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Register.css'; 
+import '../styles/Forms.css';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -16,7 +18,7 @@ const Register = () => {
         try {
             await API.post('/auth/register', { username, email, password });
             alert('Account created successfully! You can now log in.');
-            navigate('/login'); // Redirect to login page
+            navigate('/login');
         } catch (err) {
             setError('Registration failed. Try again.');
         }
@@ -25,7 +27,7 @@ const Register = () => {
     return (
         <div className="register-container">
             <h2>Create an Account</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <p className="error">{error}</p>}
             <form onSubmit={handleRegister}>
                 <input
                     type="text"

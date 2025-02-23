@@ -1,0 +1,27 @@
+.background-lines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      45deg, 
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 20px
+    );
+    animation: moveLines 20s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  @keyframes moveLines {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  

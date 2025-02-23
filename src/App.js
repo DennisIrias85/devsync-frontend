@@ -1,35 +1,27 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import Logo from './components/Logo';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import './App.css';
-
-
-const LandingPage = () => {
-    const navigate = useNavigate();
-
-    return (
-        <div className="landing-container">
-            <Logo />
-            <h1>Welcome to DevSync</h1>
-            <div className="button-group">
-                <button onClick={() => navigate('/register')}>Create an account</button>
-                <button onClick={() => navigate('/login')}>I have an account</button>
-            </div>
-        </div>
-    );
-};
+import Tasks from './pages/Tasks';
+import TaskDetail from './pages/TaskDetail';
+import './styles/Background.css';
+import './App.css'
 
 function App() {
     return (
-        <Router>
-            <Routes>
+        <div>
+            <div className="background-lines"></div>
+            <Router>
+                <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} /> 
-            </Routes>
-        </Router>
+                <Route path="/register" element={<Register />} />
+                <Route path="/tasks" element={<Tasks />} />
+                <Route path="/tasks/:id" element={<TaskDetail />} />
+                </Routes>
+            </Router>
+        </div>
     );
 }
 
