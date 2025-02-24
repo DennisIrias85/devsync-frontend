@@ -9,6 +9,7 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [category, setCategory] = useState('');
+  const [dueDate, setDueDate] = useState('');
   const [reminder, setReminder] = useState('');
   const navigate = useNavigate();
 
@@ -34,11 +35,13 @@ const Tasks = () => {
         description: '', 
         status: 'To Do', 
         category, 
+        dueDate,
         reminder 
       };
       await API.post('/tasks', payload);
       setNewTask('');
       setCategory('');
+      setDueDate('');
       setReminder('');
       fetchTasks();
       toast.success('Task added!');
@@ -47,7 +50,6 @@ const Tasks = () => {
     }
   };
 
-  // Remove immediate completion toggle and use navigation to detail view
   const openTaskDetail = (id) => {
     navigate(`/tasks/${id}`);
   };
@@ -70,7 +72,7 @@ const Tasks = () => {
         <form onSubmit={addTask}>
           <input
             type="text"
-            placeholder="Add a new task..."
+            placeholder="Add a New Task..."
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             required
@@ -82,8 +84,19 @@ const Tasks = () => {
             onChange={(e) => setCategory(e.target.value)}
           />
           <input
-            type="datetime-local"
-            placeholder="Set a reminder (optional)"
+            type="text" 
+            placeholder="Set Due Date" 
+            onFocus={(e) => e.target.type = 'date'} 
+            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            required
+          />
+          <input
+            type="text" 
+            placeholder="Set a Reminder (optional)" 
+            onFocus={(e) => e.target.type = 'date'} 
+            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
             value={reminder}
             onChange={(e) => setReminder(e.target.value)}
           />

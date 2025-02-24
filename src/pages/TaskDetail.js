@@ -22,7 +22,7 @@ const TaskDetail = () => {
           dueDate: data.dueDate ? data.dueDate.substring(0, 10) : ''
         });
       } catch (err) {
-        console.error('Error fetching task:', err);
+        console.error(err);
       }
     };
     fetchTask();
@@ -35,7 +35,7 @@ const TaskDetail = () => {
       setTask(data);
       setEditing(false);
     } catch (err) {
-      console.error('Error updating task:', err);
+      console.error(err);
     }
   };
 
@@ -46,27 +46,31 @@ const TaskDetail = () => {
       <h2>Task Detail</h2>
       {editing ? (
         <form onSubmit={handleUpdate} className="form-container">
+          <label>Title:</label>
           <input
             type="text"
             value={updatedTask.title}
             onChange={(e) => setUpdatedTask({ ...updatedTask, title: e.target.value })}
             required
           />
+          <label>Category:</label>
           <input
             type="text"
             placeholder="Category"
             value={updatedTask.category}
             onChange={(e) => setUpdatedTask({ ...updatedTask, category: e.target.value })}
           />
+          <label>Reminder:</label>
           <input
             type="datetime-local"
-            placeholder="Reminder"
+            placeholder="Set Reminder"
             value={updatedTask.reminder}
             onChange={(e) => setUpdatedTask({ ...updatedTask, reminder: e.target.value })}
           />
+          <label>Due Date:</label>
           <input
             type="date"
-            placeholder="Due Date"
+            placeholder="Set Due Date"
             value={updatedTask.dueDate}
             onChange={(e) => setUpdatedTask({ ...updatedTask, dueDate: e.target.value })}
           />
