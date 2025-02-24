@@ -9,8 +9,8 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [category, setCategory] = useState('');
-  const [dueDate, setDueDate] = useState('');
   const [reminder, setReminder] = useState('');
+  const [dueDate, setDueDate] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,23 +35,19 @@ const Tasks = () => {
         description: '', 
         status: 'To Do', 
         category, 
-        dueDate,
-        reminder 
+        reminder, 
+        dueDate
       };
       await API.post('/tasks', payload);
       setNewTask('');
       setCategory('');
-      setDueDate('');
       setReminder('');
+      setDueDate('');
       fetchTasks();
       toast.success('Task added!');
     } catch (err) {
       toast.error('Error adding task');
     }
-  };
-
-  const openTaskDetail = (id) => {
-    navigate(`/tasks/${id}`);
   };
 
   const deleteTask = async (id) => {
@@ -64,6 +60,20 @@ const Tasks = () => {
     }
   };
 
+  const markCompleted = async (id) => {
+    try {
+      await API.put(`/tasks/${id}`, { status: 'Completed' });
+      fetchTasks();
+      toast.success('Task marked as completed!');
+    } catch (err) {
+      toast.error('Error marking task as completed');
+    }
+  };
+
+  const openTaskDetail = (id) => {
+    navigate(`/tasks/${id}`);
+  };
+
   return (
     <div className="tasks-container">
       <ToastContainer />
@@ -72,7 +82,7 @@ const Tasks = () => {
         <form onSubmit={addTask}>
           <input
             type="text"
-            placeholder="Add a New Task..."
+            placeholder="Add a new task..."
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             required
@@ -84,21 +94,16 @@ const Tasks = () => {
             onChange={(e) => setCategory(e.target.value)}
           />
           <input
-            type="text" 
-            placeholder="Set Due Date" 
-            onFocus={(e) => e.target.type = 'date'} 
-            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            required
-          />
-          <input
-            type="text" 
-            placeholder="Set a Reminder (optional)" 
-            onFocus={(e) => e.target.type = 'date'} 
-            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+            type="datetime-local"
+            placeholder="Set a reminder (optional)"
             value={reminder}
             onChange={(e) => setReminder(e.target.value)}
+          />
+          <input
+            type="date"
+            placeholder="Set due date (optional)"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
           />
           <button type="submit">Add Task</button>
         </form>
@@ -106,13 +111,16 @@ const Tasks = () => {
       <ul className="tasks-list">
         {tasks.map((task) => (
           <li key={task._id} className={task.status === 'Completed' ? 'completed' : ''}>
-            <div className="task-info" onClick={() => openTaskDetail(task._id)}>
-              {task.title}
-              {task.category && <span className="task-category"> [{task.category}]</span>}
-              {task.reminder && <span className="task-reminder"> (Reminder: {new Date(task.reminder).toLocaleString()})</span>}
-              {task.dueDate && <span className="task-dueDate"> (Due: {new Date(task.dueDate).toLocaleDateString()})</span>}
+            <div className="task-info">
+              <p><strong>Title:</strong> {task.title}</p>
+              <p><strong>Category:</strong> {task.category || 'N/A'}</p>
+              <p><strong>Due Date:</strong> {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'N/A'}</p>
             </div>
-            <button className="delete-btn" onClick={() => deleteTask(task._id)}>🗑</button>
+            <div className="task-actions">
+              <button className="details-btn" onClick={() => openTaskDetail(task._id)}>Details</button>
+              <button className="completed-btn" onClick={() => markCompleted(task._id)}>Completed</button>
+              <button className="delete-btn" onClick={() => deleteTask(task._id)}>🗑</button>
+            </div>
           </li>
         ))}
       </ul>
