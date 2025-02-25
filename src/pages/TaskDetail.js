@@ -31,11 +31,12 @@ const TaskDetail = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await API.put(`/tasks/${id}`, updatedTask);
-      setTask(data);
+      await API.put(`/tasks/${id}`, updatedTask);
       setEditing(false);
+      const refreshed = await API.get(`/tasks/${id}`);
+      setTask(refreshed.data);
     } catch (err) {
-      console.error(err);
+      console.error('Error updating task:', err);
     }
   };
 
@@ -62,19 +63,24 @@ const TaskDetail = () => {
           />
           <label>Reminder:</label>
           <input
-            type="datetime-local"
+            type="text"
             placeholder="Set Reminder"
+            onFocus={(e) => e.target.type = 'datetime-local'}
+            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} 
             value={updatedTask.reminder}
             onChange={(e) => setUpdatedTask({ ...updatedTask, reminder: e.target.value })}
           />
           <label>Due Date:</label>
           <input
-            type="date"
-            placeholder="Set Due Date"
+            type="text"
+            placeholder="Set Reminder"
+            onFocus={(e) => e.target.type = 'datetime-local'}
+            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} 
             value={updatedTask.dueDate}
             onChange={(e) => setUpdatedTask({ ...updatedTask, dueDate: e.target.value })}
           />
           <button type="submit">Save Changes</button>
+          <button type="back-button">Cancel</button>
         </form>
       ) : (
         <div className="task-details">
