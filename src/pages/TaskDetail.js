@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import API from '../api/api';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../styles/TaskDetail.css';
 
 const TaskDetail = () => {
@@ -31,14 +33,34 @@ const TaskDetail = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await API.put(`/tasks/${id}`, updatedTask);
-      setEditing(false);
-      const refreshed = await API.get(`/tasks/${id}`);
-      setTask(refreshed.data);
+        const token = localStorage.getItem('token');
+        if (!token) {
+            toast.error('No authentication token found. Please log in again.');
+            return;
+        }
+
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
+        const payload = {
+            title: updatedTask.title,
+            category: updatedTask.category,
+            reminder: updatedTask.reminder,
+            dueDate: updatedTask.dueDate,
+            status: task.status
+        };
+
+        const { data } = await API.put(`/tasks/${id}`, payload, config);
+        setTask(data);
+        setEditing(false);
+        toast.success('Task updated!');
     } catch (err) {
-      console.error('Error updating task:', err);
+        console.error('Error updating task:', err);
+        toast.error('Error saving task changes');
     }
-  };
+};
+
 
   if (!task) return <div>Loading...</div>;
 
@@ -73,14 +95,14 @@ const TaskDetail = () => {
           <label>Due Date:</label>
           <input
             type="text"
-            placeholder="Set Reminder"
-            onFocus={(e) => e.target.type = 'datetime-local'}
+            placeholder="Set Due Date"
+            onFocus={(e) => e.target.type = 'date'}
             onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }} 
             value={updatedTask.dueDate}
             onChange={(e) => setUpdatedTask({ ...updatedTask, dueDate: e.target.value })}
           />
           <button type="submit">Save Changes</button>
-          <button type="back-button">Cancel</button>
+          <button type="button" onClick={() => setEditing(false)}>Cancel</button>
         </form>
       ) : (
         <div className="task-details">

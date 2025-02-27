@@ -12,6 +12,8 @@ const Tasks = () => {
   const [category, setCategory] = useState('');
   const [reminder, setReminder] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,25 +31,41 @@ const Tasks = () => {
 
   const addTask = async (e) => {
     e.preventDefault();
-    if (!newTask.trim()) return;
+    if (!newTask.trim()) {
+        toast.error('Task title cannot be empty!');
+        return;
+    }
+
     try {
-      const payload = { 
-        title: newTask, 
-        description: '', 
-        status: 'To Do', 
-        category, 
-        reminder, 
-        dueDate
-      };
-      await API.post('/tasks', payload);
-      setNewTask('');
-      setCategory('');
-      setReminder('');
-      setDueDate('');
-      fetchTasks();
-      toast.success('Task added!');
+        const payload = { 
+            title: newTask, 
+            description: '', 
+            status: 'To Do', 
+            category, 
+            reminder: reminder ? new Date(reminder).toISOString() : null,
+            dueDate: dueDate ? new Date(dueDate).toISOString() : null 
+        };
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            toast.error('No authentication token found. Please log in again.');
+            return;
+        }
+
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
+        await API.post('/tasks', payload, config);
+        setNewTask('');
+        setCategory('');
+        setReminder('');
+        setDueDate('');
+        fetchTasks();
+        toast.success('Task added!');
     } catch (err) {
-      toast.error('Error adding task');
+        console.error('Error adding task:', err);
+        toast.error(err.response?.data?.message || 'Error adding task');
     }
   };
 
@@ -66,10 +84,18 @@ const Tasks = () => {
     navigate(`/tasks/${id}`);
   };
 
-  const deleteTask = async (id) => {
+  const confirmDeleteTask = (id) => {
+    setTaskToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const deleteTask = async () => {
+    if (!taskToDelete) return;
+
     try {
-      await API.delete(`/tasks/${id}`);
+      await API.delete(`/tasks/${taskToDelete}`);
       fetchTasks();
+      setShowDeleteModal(false);
       toast.success('Task deleted!');
     } catch (err) {
       toast.error('Error deleting task');
@@ -93,7 +119,7 @@ const Tasks = () => {
           <input 
             type="text" 
             placeholder="Set Due Date" 
-            onFocus={(e) => e.target.type = 'date'} 
+            onFocus={(e) => e.target.type = 'datetime-local'} 
             onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
@@ -107,12 +133,11 @@ const Tasks = () => {
           />
           <input 
             type="text" 
-            placeholder="Set Reminder" 
-            onFocus={(e) => e.target.type = 'date'} 
+            placeholder="Set Reminder (optional)" 
+            onFocus={(e) => e.target.type = 'datetime-local'} 
             onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
             value={reminder}
             onChange={(e) => setReminder(e.target.value)}
-            required
           />
           <button type="submit">Add Task</button>
         </form>
@@ -132,11 +157,21 @@ const Tasks = () => {
               <button className="status-btn" onClick={() => toggleTaskStatus(task._id, task.status)}>
                 {task.status === 'Completed' ? 'Mark as To Do' : 'Mark as Completed'}
               </button>
-              <button className="delete-btn" onClick={() => deleteTask(task._id)}>🗑</button>
+              <button className="delete-btn" onClick={() => confirmDeleteTask(task._id)}>🗑</button>
             </div>
           </li>
         ))}
       </ul>
+
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <p>Are you sure you want to delete this task?</p>
+            <button onClick={deleteTask}>Yes, Delete</button>
+            <button onClick={() => setShowDeleteModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
