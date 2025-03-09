@@ -17,7 +17,8 @@ const Login = () => {
     try {
       const response = await API.post('/auth/login', { email, password });
       localStorage.setItem('token', response.data.token);
-      navigate('/tasks'); // Redirect after login
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      navigate('/dashboard');
     } catch (err) {
       setError('Invalid email or password');
     }

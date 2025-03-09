@@ -1,6 +1,7 @@
 body {
   background-color: #1e2a38;
   overflow-x: hidden;
+  overflow-y: auto !important;
   position: relative;
 }
 
@@ -38,7 +39,7 @@ body {
 
 h1 {
   margin-top: 20px;
-  font-size: 2rem;
+  font-size: 2.5rem;
 }
 
 .button-group {
@@ -61,6 +62,7 @@ button {
   margin: 0 auto !important;
   display: block !important;
 }
+
 button:hover {
   background-color: #2fc7b3 !important;
   border-color: #cccccc !important;

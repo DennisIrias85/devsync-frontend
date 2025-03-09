@@ -1,14 +1,19 @@
 .task-detail-container {
-    background-color: rgba(30, 42, 56, 0.3); 
-    color: white;
-    min-height: 100vh;
-    padding: 20px;
-    text-align: center;
-  }
+  background-color: rgba(30, 42, 56, 0.3);
+  color: white;
+  min-height: 100vh;
+  padding: 40px 20px 20px 60px;
+  text-align: center;
+  transition: margin-left 0.5s ease-in-out;
+}
+
+.sidebar-container.open + .task-detail-container {
+  margin-left: 200px;
+}
   
   .task-details {
     margin: 20px auto;
-    max-width: 600px;
+    max-width: 500px;
     background-color: #2a3b4d;
     padding: 20px;
     border-radius: 5px;
@@ -22,7 +27,7 @@
   
   .task-detail-container button {
     margin: 10px;
-    padding: 10px 20px;
+    padding: 20px 20px;
     font-size: 16px;
     border: none;
     border-radius: 5px;

@@ -5,15 +5,15 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/Tasks.css';
 import SidebarMenu from '../components/SidebarMenu';
+import TaskModal from '../components/TaskModal';
 
-const Tasks = () => {
+const Tasks = ({ openTaskModal }) => {
   const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState('');
-  const [category, setCategory] = useState('');
-  const [reminder, setReminder] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const [viewMode, setViewMode] = useState('detailed');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(null);
+  const [showTaskModal, setShowTaskModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,21 +29,23 @@ const Tasks = () => {
     }
   };
 
-  const addTask = async (e) => {
-    e.preventDefault();
-    if (!newTask.trim()) {
-        toast.error('Task title cannot be empty!');
-        return;
-    }
-
+  const addTask = async (taskData) => {
     try {
-        const payload = { 
-            title: newTask, 
-            description: '', 
-            status: 'To Do', 
-            category, 
-            reminder: reminder ? new Date(reminder).toISOString() : null,
-            dueDate: dueDate ? new Date(dueDate).toISOString() : null 
+        if (!taskData.title.trim()) {
+            toast.error('Task title is required');
+            return;
+        }
+
+        if (!taskData.dueDate) {
+            toast.error('Due Date is required');
+            return;
+        }
+
+        const payload = {
+            title: taskData.title,
+            category: taskData.category,
+            reminder: taskData.reminder ? new Date(taskData.reminder).toISOString() : null,
+            dueDate: new Date(taskData.dueDate).toISOString()
         };
 
         const token = localStorage.getItem('token');
@@ -52,22 +54,28 @@ const Tasks = () => {
             return;
         }
 
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
+        const config = { headers: { Authorization: `Bearer ${token}` } };
 
-        await API.post('/tasks', payload, config);
-        setNewTask('');
-        setCategory('');
-        setReminder('');
-        setDueDate('');
-        fetchTasks();
-        toast.success('Task added!');
+        const response = await API.post('/tasks', payload, config);
+
+        if (response.status === 201) {
+            toast.success('Task added successfully!');
+            fetchTasks();
+            setShowTaskModal(false); 
+        } else {
+            throw new Error('Unexpected server response');
+        }
     } catch (err) {
         console.error('Error adding task:', err);
-        toast.error(err.response?.data?.message || 'Error adding task');
+
+        const errorMessage = err.response?.data?.message || 'Error adding task';
+        toast.error(errorMessage);
+
+        setShowTaskModal(true); 
     }
-  };
+};
+
+
 
   const toggleTaskStatus = async (id, currentStatus) => {
     const newStatus = currentStatus === 'Completed' ? 'To Do' : 'Completed';
@@ -91,7 +99,6 @@ const Tasks = () => {
 
   const deleteTask = async () => {
     if (!taskToDelete) return;
-
     try {
       await API.delete(`/tasks/${taskToDelete}`);
       fetchTasks();
@@ -104,61 +111,67 @@ const Tasks = () => {
 
   return (
     <div className="tasks-container">
-      <SidebarMenu />
+      <SidebarMenu openTaskModal={() => setShowTaskModal(true)} />
       <ToastContainer />
       <h2>My Tasks</h2>
-      <div className="form-container">
-        <form onSubmit={addTask}>
-          <input
-            type="text"
-            placeholder="Add a New Task..."
-            value={newTask}
-            onChange={(e) => setNewTask(e.target.value)}
-            required
-          />
-          <input 
-            type="text" 
-            placeholder="Set Due Date" 
-            onFocus={(e) => e.target.type = 'datetime-local'} 
-            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Category (optional)"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-          <input 
-            type="text" 
-            placeholder="Set Reminder (optional)" 
-            onFocus={(e) => e.target.type = 'datetime-local'} 
-            onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-            value={reminder}
-            onChange={(e) => setReminder(e.target.value)}
-          />
-          <button type="submit">Add Task</button>
-        </form>
+
+      <div className="view-toggle-container">
+        <div className="view-toggle">
+          <button className={viewMode === 'detailed' ? 'active' : ''} onClick={() => setViewMode('detailed')}>
+            Detailed View
+          </button>
+          <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}>
+            List View
+          </button>
+        </div>
+        <button className="add-task-btn" onClick={() => setShowTaskModal(true)}>
+          + Add Task
+        </button>
       </div>
+
       <ul className="tasks-list">
         {tasks.map((task) => (
           <li key={task._id} className={task.status === 'Completed' ? 'completed' : ''}>
-            <div className="task-info">
-              <p><strong>Title:</strong> {task.title}</p>
-              <p><strong>Category:</strong> {task.category || 'N/A'}</p>
-              <p><strong>Due Date:</strong> {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'N/A'}</p>
-              <p><strong>Reminder:</strong> {task.reminder ? new Date(task.reminder).toLocaleString() : 'N/A'}</p>
-              <p><strong>Status:</strong> {task.status}</p>
-            </div>
-            <div className="task-actions">
-              <button className="details-btn" onClick={() => openTaskDetail(task._id)}>Details</button>
-              <button className="status-btn" onClick={() => toggleTaskStatus(task._id, task.status)}>
-                {task.status === 'Completed' ? 'Mark as To Do' : 'Mark as Completed'}
-              </button>
-              <button className="delete-btn" onClick={() => confirmDeleteTask(task._id)}>🗑</button>
-            </div>
+            {viewMode === 'detailed' ? (
+              <>
+                <div className="task-info">
+                  <p><strong>Title:</strong> {task.title}</p>
+                  <p><strong>Category:</strong> {task.category || 'N/A'}</p>
+                  <p><strong>Due Date:</strong> {task.dueDate ? new Date(task.dueDate).toLocaleString() : 'N/A'}</p>
+                  <p><strong>Reminder:</strong> {task.reminder ? new Date(task.reminder).toLocaleString() : 'N/A'}</p>
+                  <p><strong>Status:</strong> {task.status}</p>
+                </div>
+                <div className="task-actions">
+                  <button className="details-btn" onClick={() => openTaskDetail(task._id)}>Details</button>
+                  <button className="status-btn" onClick={() => toggleTaskStatus(task._id, task.status)}>
+                    {task.status === 'Completed' ? 'Mark as To Do' : 'Mark as Completed'}
+                  </button>
+                  <button className="delete-btn" onClick={() => confirmDeleteTask(task._id)}>🗑</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="task-list-item">
+                  <div className="task-list-info">
+                    <span className="task-title">{task.title}</span>
+                    <span className="task-due-date">Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'N/A'}</span>
+                  </div>
+                  <button className="menu-btn" onClick={() => setMenuOpen(menuOpen === task._id ? null : task._id)}>
+                    ⋮
+                  </button>
+                  {menuOpen === task._id && (
+                    <div className="task-menu">
+                      <button onClick={() => openTaskDetail(task._id)}>Details</button>
+                      <button onClick={() => toggleTaskStatus(task._id, task.status)}>
+                        {task.status === 'Completed' ? 'Mark as To Do' : 'Mark as Completed'}
+                      </button>
+                      <button onClick={() => confirmDeleteTask(task._id)}>Delete</button>
+                    </div>
+                  )}
+                </div>
+
+              </>
+            )}
           </li>
         ))}
       </ul>
@@ -172,8 +185,11 @@ const Tasks = () => {
           </div>
         </div>
       )}
+
+      {showTaskModal && <TaskModal closeModal={() => setShowTaskModal(false)} onSave={addTask} />}
     </div>
   );
 };
 
 export default Tasks;
+

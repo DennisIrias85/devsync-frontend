@@ -39,7 +39,7 @@ input {
 }
 
 button {
-    width: 200px;  /* ✅ Same smaller size as login */
+    width: 200px; 
     padding: 10px;
     font-size: 16px;
     cursor: pointer;
