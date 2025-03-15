@@ -1,4 +1,4 @@
-# DevSync
+# DevSync Frontend
 
 DevSync is a task management web application designed to help users stay organized and productive. Built with modern web technologies, it offers a seamless experience for managing tasks, reminders, and deadlines.
 
