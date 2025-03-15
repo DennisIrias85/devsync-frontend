@@ -17,19 +17,19 @@ DevSync is a task management web application designed to help users stay organiz
 
 ## Screenshots
 ### Dashboard
-![Dashboard Screenshot](src/screenshots/images/dashboard.png)
+![Dashboard Screenshot](images/dashboard.png)
 
 ### Tasks Detailed View
-![Detailed View Screenshot](src/screenshots/images/detailed_view.png)
+![Detailed View Screenshot](images/detailed_view.png)
 
 ### Tasks List View
-![List View Screenshot](src/screenshots/images/list_view.png)
+![List View Screenshot](images/list_view.png)
 
 ### Task Creation Modal
-![Task Modal Screenshot](src/screenshots/images/task_modal.png)
+![Task Modal Screenshot](images/task_modal.png)
 
 ### Sidebar Menu
-![Sidebar Menu Screenshot](src/screensots/images/sidebar.png)
+![Sidebar Menu Screenshot](images/sidebar.png)
 
 ---
 
