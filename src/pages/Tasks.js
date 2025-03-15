@@ -1,79 +1,83 @@
 import React, { useState, useEffect } from 'react';
 import API from '../api/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/Tasks.css';
 import SidebarMenu from '../components/SidebarMenu';
 import TaskModal from '../components/TaskModal';
 
-const Tasks = ({ openTaskModal }) => {
-  const [tasks, setTasks] = useState([]);
-  const [viewMode, setViewMode] = useState('detailed');
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(null);
-  const [showTaskModal, setShowTaskModal] = useState(false);
-  const navigate = useNavigate();
+const fetchTasks = async (setTasks, location) => {
+    const searchParams = new URLSearchParams(location.search);
+    const filter = searchParams.get('filter');
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
     try {
-      const { data } = await API.get('/tasks');
-      setTasks(data);
+        const { data } = await API.get(`/tasks${filter ? `?filter=${filter}` : ''}`);
+        setTasks(data);
     } catch (err) {
-      toast.error('Error fetching tasks');
+        toast.error('Error fetching tasks');
     }
-  };
+};
+
+const Tasks = ({ openTaskModal }) => {
+    const [tasks, setTasks] = useState([]);
+    const [viewMode, setViewMode] = useState('detailed');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(null);
+    const [showTaskModal, setShowTaskModal] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        fetchTasks(setTasks, location);  
+    }, [location]);
 
   const addTask = async (taskData) => {
     try {
-        if (!taskData.title.trim()) {
-            toast.error('Task title is required');
-            return;
-        }
+      if (!taskData.title.trim()) {
+        toast.error('Task title is required');
+        return;
+      }
 
-        if (!taskData.dueDate) {
-            toast.error('Due Date is required');
-            return;
-        }
+      if (!taskData.dueDate) {
+        toast.error('Due Date is required');
+        return;
+      }
 
-        const payload = {
-            title: taskData.title,
-            category: taskData.category,
-            reminder: taskData.reminder ? new Date(taskData.reminder).toISOString() : null,
-            dueDate: new Date(taskData.dueDate).toISOString()
-        };
+      const payload = {
+        title: taskData.title,
+        category: taskData.category,
+        reminder: taskData.reminder ? new Date(taskData.reminder).toISOString() : null,
+        dueDate: new Date(taskData.dueDate).toISOString()
+      };
 
-        const token = localStorage.getItem('token');
-        if (!token) {
-            toast.error('No authentication token found. Please log in again.');
-            return;
-        }
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('No authentication token found. Please log in again.');
+        return;
+      }
 
-        const config = { headers: { Authorization: `Bearer ${token}` } };
+      const config = { headers: { Authorization: `Bearer ${token}` } };
 
-        const response = await API.post('/tasks', payload, config);
+      const response = await API.post('/tasks', payload, config);
 
-        if (response.status === 201) {
-            toast.success('Task added successfully!');
-            fetchTasks();
-            setShowTaskModal(false); 
-        } else {
-            throw new Error('Unexpected server response');
-        }
+      if (response.status === 201) {
+        toast.success('Task added successfully!');
+        fetchTasks();
+        setShowTaskModal(false);
+      } else {
+        throw new Error('Unexpected server response');
+      }
     } catch (err) {
-        console.error('Error adding task:', err);
+      console.error('Error adding task:', err);
 
-        const errorMessage = err.response?.data?.message || 'Error adding task';
-        toast.error(errorMessage);
+      const errorMessage = err.response?.data?.message || 'Error adding task';
+      toast.error(errorMessage);
 
-        setShowTaskModal(true); 
+      setShowTaskModal(true);
     }
-};
+  };
 
 
 
@@ -101,7 +105,7 @@ const Tasks = ({ openTaskModal }) => {
     if (!taskToDelete) return;
     try {
       await API.delete(`/tasks/${taskToDelete}`);
-      fetchTasks();
+      fetchTasks(setTasks, location);
       setShowDeleteModal(false);
       toast.success('Task deleted!');
     } catch (err) {

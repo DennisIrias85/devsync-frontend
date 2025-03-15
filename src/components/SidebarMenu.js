@@ -27,12 +27,12 @@ const SidebarMenu = ({ openTaskModal }) => {
             </div>
 
             <div className="sidebar-menu" ref={menuRef}>
+                <button onClick={() => { navigate('/dashboard'); setOpen(false); }}>My Dashboard</button>
                 <button onClick={() => { navigate('/tasks'); setOpen(false); }}>My Tasks</button>
                 <button onClick={() => { navigate('/tasks?filter=pending'); setOpen(false); }}>My Pending Tasks</button>
                 <button onClick={() => { navigate('/tasks?filter=completed'); setOpen(false); }}>My Completed Tasks</button>
-                <button onClick={() => { openTaskModal(); setOpen(false); }}>Add a New Task</button>
                 <button onClick={() => { navigate('/tasks/categories'); setOpen(false); }}>Tasks by Category</button>
-                <button onClick={() => { navigate('/dashboard'); setOpen(false); }}>My Dashboard</button>
+                <button onClick={() => { openTaskModal(); setOpen(false); }}>Add a New Task</button>
             </div>
         </div>
     );
