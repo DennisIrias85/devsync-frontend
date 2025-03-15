@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+# DevSync
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+DevSync is a task management web application designed to help users stay organized and productive. Built with modern web technologies, it offers a seamless experience for managing tasks, reminders, and deadlines.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
+- User Authentication (Login/Registration)
+- Task Creation, Editing, and Deletion
+- Filter Tasks by Status (Pending, Completed)
+- Organize Tasks by Categories
+- Reminder and Due Date Management
+- Responsive Design for Mobile and Desktop
+- Interactive UI with Detailed and List Views
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Screenshots
+### Dashboard
+![Dashboard Screenshot](src/screenshots/images/dashboard.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Tasks Detailed View
+![Detailed View Screenshot](src/screenshots/images/detailed_view.png)
 
-### `npm test`
+### Tasks List View
+![List View Screenshot](src/screenshots/images/list_view.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Task Creation Modal
+![Task Modal Screenshot](src/screenshots/images/task_modal.png)
 
-### `npm run build`
+### Sidebar Menu
+![Sidebar Menu Screenshot](src/screensots/images/sidebar.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Tech Stack
+- **Frontend:** React, React Router, SCSS
+- **Backend:** Node.js, Express
+- **Database:** MongoDB
+- **Authentication:** JSON Web Tokens (JWT)
+- **Toastify:** For sleek notifications
+- **Custom Hooks & Components:** For optimized code structure
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Installation
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/DennisIrias85/DevSync.git
+   cd DevSync
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. Install dependencies
+npm install
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. Set up environment variables
+Create a .env file in the root directory with the following:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_jwt_secret
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. Run the development server
+npm run dev
 
-## Learn More
+**Usage**
+- Login/Register to access the app.
+- Navigate through the Dashboard to view tasks, create new tasks, or manage task categories.
+- Click on the three-dot menu next to each task for quick actions like editing or deleting.
+- Toggle between Detailed View and List View as per your preference.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Upcoming Features**
+- Drag-and-drop task reordering
+- Recurring tasks for repetitive reminders
+- Enhanced filtering options
+- Dark/Light mode toggle
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+**Contributing**
+Contributions are welcome! If you'd like to improve DevSync, please fork the repo, make changes, and submit a pull request.
 
-### Code Splitting
+**Contact**
+For questions, feedback, or collaboration opportunities, feel free to reach out!
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**License
+This project is licensed under the [MIT License](./LICENSE).
